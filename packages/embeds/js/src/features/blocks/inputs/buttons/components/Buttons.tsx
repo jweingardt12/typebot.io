@@ -15,11 +15,11 @@ type Props = {
 
 export const Buttons = (props: Props) => {
   let inputRef: HTMLInputElement | undefined;
+  const areButtonsVisible =
+    props.options?.areInitialSearchButtonsVisible ??
+    defaultChoiceInputOptions.areInitialSearchButtonsVisible;
   const [filteredItems, setFilteredItems] = createSignal(
-    props.options?.isSearchable &&
-      !props.options?.areInitialSearchButtonsVisible
-      ? []
-      : props.defaultItems,
+    props.options?.isSearchable && !areButtonsVisible ? [] : props.defaultItems,
   );
 
   onMount(() => {
@@ -34,11 +34,7 @@ export const Buttons = (props: Props) => {
 
   const filterItems = (inputValue: string) => {
     if (inputValue === "" || inputValue.trim().length === 0) {
-      setFilteredItems(
-        !props.options?.areInitialSearchButtonsVisible
-          ? []
-          : props.defaultItems,
-      );
+      setFilteredItems(!areButtonsVisible ? [] : props.defaultItems);
       return;
     }
 
@@ -50,7 +46,7 @@ export const Buttons = (props: Props) => {
   };
 
   return (
-    <div class="flex flex-col gap-2 w-full">
+    <div class="flex flex-col items-end gap-2 w-full typebot-buttons-input">
       <Show when={props.options?.isSearchable}>
         <div class="flex items-end typebot-input w-full">
           <SearchInput
@@ -61,11 +57,7 @@ export const Buttons = (props: Props) => {
               defaultChoiceInputOptions.searchInputPlaceholder
             }
             onClear={() =>
-              setFilteredItems(
-                !props.options?.areInitialSearchButtonsVisible
-                  ? []
-                  : props.defaultItems,
-              )
+              setFilteredItems(!areButtonsVisible ? [] : props.defaultItems)
             }
           />
         </div>
@@ -73,11 +65,12 @@ export const Buttons = (props: Props) => {
 
       <div
         class={
-          "flex flex-wrap justify-end gap-2" +
+          "flex justify-end gap-2" +
           (props.options?.isSearchable
             ? " overflow-y-scroll max-h-80 rounded-md"
             : "")
         }
+        data-slot="list"
       >
         <For each={filteredItems()}>
           {(item, index) => (

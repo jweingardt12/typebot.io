@@ -20,6 +20,7 @@ import {
   hiddenTypes,
   sessionOnlySetVariableOptions,
   valueTypes,
+  whatsAppSetVariableTypes,
 } from "@typebot.io/blocks-logic/setVariable/constants";
 import type { SetVariableBlock } from "@typebot.io/blocks-logic/setVariable/schema";
 import { timeZones } from "@typebot.io/lib/timeZones";
@@ -97,10 +98,9 @@ export const SetVariableSettings = ({ options, onOptionsChange }: Props) => {
             items={setVarTypes.map((type) => ({
               label: type,
               value: type,
-              icon:
-                type === "Contact name" || type === "Phone number" ? (
-                  <WhatsAppLogo />
-                ) : undefined,
+              icon: whatsAppSetVariableTypes.includes(type as any) ? (
+                <WhatsAppLogo />
+              ) : undefined,
             }))}
             onSelect={updateValueType}
           />
@@ -199,6 +199,14 @@ const SetVariableValue = ({
     });
   };
 
+  const updateSaveErrorInVariableId = (variable?: Pick<Variable, "id">) => {
+    if (options?.type && options.type !== "Custom") return;
+    onOptionsChange({
+      ...options,
+      saveErrorInVariableId: variable?.id,
+    });
+  };
+
   switch (options?.type) {
     case "Custom":
     case undefined:
@@ -225,11 +233,18 @@ const SetVariableValue = ({
               onSelect={updateIsCode}
             />
             {options?.isCode ? (
-              <CodeEditor
-                defaultValue={options?.expressionToEvaluate ?? ""}
-                onChange={updateExpression}
-                lang="javascript"
-              />
+              <>
+                <CodeEditor
+                  defaultValue={options?.expressionToEvaluate ?? ""}
+                  onChange={updateExpression}
+                  lang="javascript"
+                />
+                <VariableSearchInput
+                  label="Save error"
+                  initialVariableId={options.saveErrorInVariableId}
+                  onSelectVariable={updateSaveErrorInVariableId}
+                />
+              </>
             ) : (
               <Textarea
                 defaultValue={options?.expressionToEvaluate ?? ""}
@@ -318,6 +333,8 @@ const SetVariableValue = ({
     case "Result ID":
     case "Empty":
     case "Transcript":
+    case "Referral Click ID":
+    case "Referral Source ID":
       return null;
   }
 };

@@ -361,7 +361,7 @@ pre {
   border-radius: var(--typebot-button-border-radius);
 }
 
-.typebot-date-input {
+.typebot-datetime-input {
   color-scheme: light;
   color: var(--typebot-input-color);
   background-color: var(--typebot-input-bg-color);
@@ -575,7 +575,12 @@ select option {
     var(--typebot-input-opacity)
   );
   box-shadow: var(--typebot-input-box-shadow);
-  max-width: 60vw;
+  border-width: var(--typebot-input-border-width);
+  border-color: rgba(
+    var(--typebot-input-border-rgb),
+    var(--typebot-input-border-opacity)
+  );
+  max-width: 350px;
   @apply flex flex-col pl-4 py-4 pr-8 gap-1;
 }
 
@@ -617,4 +622,13 @@ select option {
 
 [data-scope="progress"][data-part="circle-track"] {
   stroke: rgba(0, 0, 0, 0.5);
+}
+
+.typebot-buttons-input > [data-slot="list"] {
+  flex-direction: var(--typebot-buttons-input-flex-direction);
+  flex-wrap: wrap;
+}
+
+.typebot-buttons-input > .typebot-input {
+  max-width: 350px;
 }
